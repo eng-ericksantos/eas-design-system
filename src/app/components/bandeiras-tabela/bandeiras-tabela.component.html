@@ -1,0 +1,109 @@
+<div
+  class="rates-table"
+  #tableRoot
+>
+  <div
+    class="scroll"
+    #scrollArea
+    (scroll)="reflowOverlay()"
+  >
+    <!-- Contorno + etiqueta -->
+    <div
+      class="current-col"
+      [style.left.px]="overlay.left"
+      [style.width.px]="overlay.width"
+      [style.top.px]="overlay.top"
+      [style.height.px]="overlay.height"
+    ></div>
+
+    <div
+      class="current-tag"
+      [style.left.px]="overlay.center"
+      [style.top.px]="overlay.tagTop"
+      [style.max-width.px]="overlay.width"
+    >Nível atual</div>
+
+    <!-- Cabeçalho -->
+    <div
+      class="header-row grid"
+      #headerRow
+    >
+      <div class="left-col group-title align-with-header">Maquininha</div>
+      <div
+        class="level-head level-1"
+        #levelHead
+        (click)="setNivelAtual(0)"
+      >Nível 1</div>
+      <div
+        class="level-head level-2"
+        #levelHead
+        (click)="setNivelAtual(1)"
+      >Nível 2</div>
+      <div
+        class="level-head level-3"
+        #levelHead
+        (click)="setNivelAtual(2)"
+      >Nível 3</div>
+      <div
+        class="level-head level-4"
+        #levelHead
+        (click)="setNivelAtual(3)"
+      >Nível 4</div>
+    </div>
+
+    <!-- Grupo 1 -->
+    <div class="group">
+      <div
+        class="grid"
+        *ngFor="let taxa of selectedBrand.grupos[0].taxas; let r = index"
+        [class.row-zebra]="r === 0 || r === 2"
+      >
+        <div class="left-col method">{{ taxa.metodo }}</div>
+        <div
+          class="cell"
+          *ngFor="let v of taxa.niveis; let c = index"
+          [class.is-current]="c === nivelAtual"
+        >{{ v }}</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- 'Online' alinhado ao cabeçalho -->
+    <div class="header-row grid online-header">
+      <div class="left-col group-title">Online</div>
+      <div
+        class="spacer"
+        aria-hidden="true"
+      ></div>
+      <div
+        class="spacer"
+        aria-hidden="true"
+      ></div>
+      <div
+        class="spacer"
+        aria-hidden="true"
+      ></div>
+      <div
+        class="spacer"
+        aria-hidden="true"
+      ></div>
+    </div>
+
+    <!-- Grupo 2 -->
+    <div class="group">
+      <div
+        class="grid"
+        *ngFor="let taxa of selectedBrand.grupos[1].taxas; let r = index"
+        [class.row-zebra]="r === 0 || r === 2"
+      >
+        <div class="left-col method">{{ taxa.metodo }}</div>
+        <div
+          class="cell"
+          *ngFor="let v of taxa.niveis; let c = index"
+          [class.is-current]="c === nivelAtual"
+        >{{ v }}</div>
+      </div>
+    </div>
+  </div>
+</div>

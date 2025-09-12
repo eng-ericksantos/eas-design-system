@@ -1,0 +1,198 @@
+:host {
+  display: block;
+  --left-col: 168px; /* largura da coluna de métodos semelhante ao Figma */
+  --min-level: 92px; /* colunas dos níveis cabem sem cortar */
+  --zebra: #f0f2f5; /* tom da faixa cinza do Figma */
+  --current-border: #4f4f4f; /* Figma neutral/dark */
+  --title-blue: #2c4aa5;
+  font-family:
+    system-ui,
+    -apple-system,
+    Segoe UI,
+    Roboto,
+    Arial,
+    sans-serif;
+}
+
+.rates-table {
+  position: relative;
+  background: #fff;
+  overflow: visible;
+}
+
+.scroll {
+  --headroom: 26px;
+  position: relative;
+  // overflow-x: auto;
+  overflow-y: visible; /* evita cortar o início do contorno/etiqueta */
+  -webkit-overflow-scrolling: touch;
+  padding: calc(10px + var(--headroom)) 8px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.grid {
+  width: 100%; /* força o grid a caber no container */
+  display: grid;
+  grid-template-columns: minmax(120px, var(--left-col)) repeat(4, minmax(var(--min-level), 1fr));
+}
+
+.header-row {
+  margin-bottom: 2px;
+  align-items: end;
+}
+.level-head {
+  padding: 10px 12px;
+  font-weight: 700;
+  font-size: 14px;
+  text-align: center;
+}
+.left-col {
+  padding: 10px 10px 10px 12px;
+}
+.group-title {
+  font-weight: 700;
+  color: var(--title-blue);
+  font-size: 14px;
+}
+.align-with-header {
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: 10px;
+  padding-left: 12px; /* mantém alinhado com a primeira coluna */
+}
+.method {
+  font-weight: 600;
+  color: #2f3340;
+  font-size: 14px;
+}
+.cell {
+  padding: 10px 10px;
+  font-size: 14px;
+  text-align: center;
+  color: #2f3340;
+}
+
+/* Zebra SOMENTE nas linhas Débito e Parcelado 2-6 */
+.row-zebra .left-col,
+.row-zebra .cell {
+  background: var(--zebra);
+}
+
+/* Linhas com divisória sutil */
+.group .grid:not(:last-child) .cell,
+.group .grid:not(:last-child) .left-col {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* Separador entre blocos */
+.divider {
+  height: 16px;
+  border-bottom: 1px solid #e5e7eb;
+  margin: 8px 0;
+}
+
+/* Destaque da coluna atual: sem fill, só borda (como no Figma) */
+.is-current {
+  /* sem fundo aqui para o Figma */
+}
+
+.current-col {
+  position: absolute;
+  border: 2px solid #4f4f4f;
+  border-radius: 4px;
+  background: transparent;
+  box-shadow: none;
+  box-sizing: border-box; /* borda conta dentro do width */
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* Etiqueta totalmente dentro do contorno */
+.current-tag {
+  position: absolute;
+  transform: translate(-50%);
+  padding: 4px 6px;
+  box-sizing: border-box;
+  background: #222;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 6px;
+  white-space: nowrap;
+  pointer-events: none;
+  text-align: center;
+  z-index: 6; /* acima do contorno */
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -6px;
+    border: 6px solid transparent;
+    border-top-color: #222;
+  }
+}
+
+/* Cores dos títulos dos níveis */
+.level-1 {
+  color: #1f3b82;
+}
+.level-2 {
+  color: #8a8f99;
+}
+.level-3 {
+  color: #3b6ee9;
+}
+.level-4 {
+  color: #b17900;
+}
+
+/* Responsivo */
+/* Desktop/Tablet normal — cabe sem scroll */
+:host {
+  --left-col: 168px;
+  --min-level: 92px;
+}
+
+@media (max-width: 560px) {
+  :host {
+    --left-col: 138px;
+    --min-level: 72px;
+  }
+  .level-head,
+  .cell {
+    font-size: 13px;
+    padding: 8px 8px;
+  }
+  .method,
+  .group-title {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 420px) {
+  :host {
+    --left-col: 118px;
+    --min-level: 58px;
+  }
+  .level-head,
+  .cell {
+    padding: 6px 6px;
+  }
+}
+
+@media (max-width: 380px) {
+  /* celulares bem estreitos: pode surgir o scroll */
+  :host {
+    --left-col: 110px;
+    --min-level: 54px;
+  }
+  .level-head,
+  .cell {
+    font-size: 12.5px;
+    padding: 6px 6px;
+  }
+}

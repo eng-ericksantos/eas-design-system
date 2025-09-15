@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, HostListener, Input, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostBinding, HostListener, Input, QueryList, ViewChild, ViewChildren } from '@angular/core';
 
 interface Taxa {
   metodo: string;
@@ -21,6 +21,11 @@ interface Bandeira {
   standalone: false
 })
 export class BandeirasTabelaComponent implements AfterViewInit {
+
+  @ViewChild('tagRef') tagRef!: ElementRef<HTMLDivElement>;
+
+  @Input() embedded = false;
+  @HostBinding('class.embedded') get isEmbedded() { return this.embedded; }
 
   @ViewChild('tableRoot', { static: true }) tableRoot!: ElementRef<HTMLDivElement>;
   @ViewChild('scrollArea', { static: true }) scrollArea!: ElementRef<HTMLDivElement>;
@@ -54,7 +59,19 @@ export class BandeirasTabelaComponent implements AfterViewInit {
     ],
   };
 
-  overlay = { left: 0, width: 0, top: 0, height: 0, center: 0, tagTop: 0 };
+  overlay = {
+    left: 0,
+    width: 0,
+    center: 0,
+    top: 0,
+    height: 0,
+    tagTop: 0,
+    tagMaxWidth: 0,   // 👈 novo
+  };
+
+  tagHeadroom = 26;
+  private readonly MIN_HEADROOM = 26;
+  private readonly TAG_TOP_OFFSET = 2;
 
   ngAfterViewInit(): void {
     setTimeout(() => this.reflowOverlay());
@@ -82,10 +99,13 @@ export class BandeirasTabelaComponent implements AfterViewInit {
     let left = hRect.left - cRect.left + container.scrollLeft;  // <- let
     let width = hRect.width;                                     // <- let
 
+    const styles = getComputedStyle(container);
+    const cssHeadroom = parseInt(styles.getPropertyValue('--headroom')) || 26;
+
     // >>> cria uma "faixa" de respiro acima dos títulos dos níveis
     const headerRect = this.headerRow.nativeElement.getBoundingClientRect();
-    const headroom = 24; // espaçamento para a tag (Figma ~22–24px)
-    const top = headerRect.top - cRect.top - headroom;
+    const rawTop = headerRect.top - cRect.top - cssHeadroom;
+    const top = Math.max(6, rawTop); // nunca sai do container
 
     // até o fim da última linha
     const lastRow = this.tableRoot.nativeElement
@@ -97,17 +117,36 @@ export class BandeirasTabelaComponent implements AfterViewInit {
     left = left + 1;
     width = Math.max(0, width - 2);
 
-    // *** AQUI está a alteração pedida: TAG colada no topo do contorno ***
-    const TAG_OFFSET = 2;                 // 1–3px, ajuste fino
-    const tagTop = top + TAG_OFFSET;      // fica dentro e coladinha no topo
+    const BORDER = 2;          // .current-col border-width
+    const INSET = 8;          // espaço interno da tag até a borda superior
+    const MIN_TAG_W = 72;      // largura mínima da tag
+    const MAX_TAG_W = 160;     // teto para telas grandes
+
+    const tagTop = BORDER + INSET;
+    const innerWidth = Math.max(0, width - BORDER * 2 - INSET * 2);
+    const tagMaxWidth = Math.min(Math.max(MIN_TAG_W, innerWidth), MAX_TAG_W);
 
     this.overlay = {
       left,
       width,
+      center: left + width / 2,
       top,
       height,
-      center: left + width / 2,
-      tagTop,                              // usa a variável calculada acima
+      tagTop,
+      tagMaxWidth
     };
+
+    setTimeout(() => this.adjustHeadroomForTag(), 0);
+  }
+
+  private adjustHeadroomForTag(): void {
+    const el = this.tagRef?.nativeElement;
+    if (!el) return;
+    const needed = el.scrollHeight + 8;       // altura real da tag (1 ou 2 linhas) + folga
+    const next = Math.max(this.MIN_HEADROOM, needed);
+    if (Math.abs(next - this.tagHeadroom) >= 1) {
+      this.tagHeadroom = next;                // isso atualiza [style.--headroom.px]
+      this.reflowOverlay();                   // recalcula topo do contorno com o novo headroom
+    }
   }
 }

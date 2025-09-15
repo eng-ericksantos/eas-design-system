@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { BandeirasTabelaComponent } from '../../components/bandeiras-tabela/bandeiras-tabela.component';
 import { HomeComponent } from './home.component';
+import { CollapsibleComponent } from '../../components/collapsible/collapsible.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent }
@@ -12,7 +13,8 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     HomeComponent,
-    BandeirasTabelaComponent
+    BandeirasTabelaComponent,
+    CollapsibleComponent
   ],
   imports: [
     CommonModule,

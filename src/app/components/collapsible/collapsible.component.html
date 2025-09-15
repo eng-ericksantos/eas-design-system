@@ -1,0 +1,47 @@
+<div
+  class="cf-card"
+  [class.cf-open]="expanded"
+>
+  <!-- Cabeçalho clicável -->
+  <button
+    type="button"
+    class="cf-header"
+    (click)="toggle()"
+    [attr.aria-expanded]="expanded"
+    [attr.aria-controls]="panelId"
+  >
+    <span
+      class="cf-pill"
+      [style.background]="accentColor"
+    ></span>
+
+    <span class="cf-title">{{ title }}</span>
+
+    <span class="cf-spacer"></span>
+
+    <span class="cf-action">{{ expanded ? 'ocultar' : 'exibir' }}</span>
+
+    <svg
+      class="cf-chevron"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path d="M7 10l5 5 5-5" />
+    </svg>
+  </button>
+
+  <!-- Painel (recebe o conteúdo via ng-content) -->
+  <div
+    [id]="panelId"
+    class="cf-panel"
+    [class.open]="expanded"
+  >
+    <div
+      class="cf-panel-inner"
+      [style.--content-headroom.px]="contentHeadroom"
+    >
+      <ng-content></ng-content>
+    </div>
+  </div>
+</div>

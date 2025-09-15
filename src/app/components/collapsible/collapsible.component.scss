@@ -9,7 +9,7 @@
 
   /* paddings iguais ao Figma */
   --cf-pad-x: 8px;
-  /* laterais do conteúdo */
+  /* laterais do conteúdo (AGORA ficam no filho .scroll) */
   --cf-pad-y: 16px;
   /* inferior do conteúdo */
 }
@@ -19,8 +19,8 @@
   border: 1px solid var(--cf-border);
   border-radius: var(--cf-radius);
   box-shadow: var(--cf-shadow);
-  overflow: visible;
-  /* NUNCA cria scroll interno no card */
+  overflow: hidden;
+  /* clipa qualquer vazamento */
 }
 
 .cf-header {
@@ -92,24 +92,26 @@
 
 .cf-panel.open {
   grid-template-rows: auto;
-  /* acompanha altura do conteúdo */
+  /* aberto acompanha a altura do conteúdo */
   opacity: 1;
-  overflow: visible;
-  /* aberto permite overlays aparecerem */
+  overflow: hidden;
+  /* aberto continua clipando laterais do card */
 }
 
+/* 🔄 Removemos os paddings laterais daqui.
+   O gutter horizontal passa a ser responsabilidade do .scroll (no filho). */
 .cf-panel-inner {
   min-height: 0;
   box-sizing: border-box;
-  padding: 0 var(--cf-pad-x) 0;
-  /* laterais */
+  padding: 0;
+  /* ← sem laterais */
   color: var(--cf-text);
   font-size: 14px;
 }
 
 .cf-panel.open .cf-panel-inner {
-  /* topo compacto + headroom para a TAG (definido pelo filho) */
-  padding: calc(8px + var(--content-headroom, 0px)) var(--cf-pad-x) var(--cf-pad-y);
+  /* topo compacto + headroom (definido pelo filho) + bottom do Figma */
+  padding: calc(8px + var(--content-headroom, 0px)) 0 var(--cf-pad-y);
 }
 
 .cf-panel-inner> :first-child {

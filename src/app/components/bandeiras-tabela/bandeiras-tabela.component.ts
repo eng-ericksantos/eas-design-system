@@ -82,12 +82,12 @@ export class BandeirasTabelaComponent implements AfterViewInit {
   tagHeadroom = 26;
 
   private readonly MIN_HEADROOM = 22;  // topo compacto
-  private readonly BORDER = 2;         // borda do contorno
-  private readonly INSET = 10;        // respiro interno da TAG (⬆ levemente maior p/ não “encostar”)
-  private readonly GAP = 6;         // distância entre base da TAG e o header
+  private readonly BORDER = 2;         // largura da borda do contorno
+  private readonly INSET = 10;        // respiro interno da TAG
+  private readonly GAP = 6;         // distância entre a base da TAG e o header
+  private readonly SAFETY = 4;         // folga extra p/ evitar encostar no texto
 
   ngAfterViewInit(): void {
-    // pequena espera para layout estabilizar
     setTimeout(() => this.reflowOverlay());
   }
 
@@ -101,7 +101,7 @@ export class BandeirasTabelaComponent implements AfterViewInit {
   @HostListener('window:resize') onResize() { this.reflowOverlay(); }
   @HostListener('window:orientationchange') onOrient() { this.reflowOverlay(); }
 
-  /** Calcula contorno e TAG garantindo que NUNCA ultrapassem o container */
+  /** Calcula contorno e TAG com clamps nas laterais/topo (evita vazamentos) */
   reflowOverlay() {
     const heads = this.levelHeads?.toArray();
     const rows = this.headerRows?.toArray();
@@ -110,46 +110,48 @@ export class BandeirasTabelaComponent implements AfterViewInit {
     const container = this.scrollArea.nativeElement;
     const cRect = container.getBoundingClientRect();
 
-    // 1) Coluna atual (baseada no header "Nível X")
+    // coluna atual a partir do header “Nível X”
     const hRect = heads[this.nivelAtual].nativeElement.getBoundingClientRect();
 
-    // posição horizontal relativa ao container (considerando scrollLeft)
+    // posição horizontal relativa ao container (considera scrollLeft)
     let left = hRect.left - cRect.left + container.scrollLeft;
     let width = hRect.width;
 
-    // CLAMP nas laterais do container → nunca estoura
+    // CLAMP nas laterais do container (nunca estoura o card)
     left = Math.max(0, Math.min(left, container.clientWidth - width));
     width = Math.min(width, container.clientWidth - left);
 
-    // 2) Contorno: topo colado acima do header com headroom calculado
+    // topo do primeiro header relativo ao container
     const firstHeaderRect = rows[0].nativeElement.getBoundingClientRect();
     const headerTop = firstHeaderRect.top - cRect.top;
 
-    // mede a TAG para headroom exato (suporta 1 ou 2 linhas)
+    // mede a TAG (suporta quebra em 2 linhas)
     const tagH = this.tagRef?.nativeElement?.offsetHeight || 24;
-    const neededHead = Math.ceil(tagH + this.GAP + this.BORDER + this.INSET);
+
+    // headroom necessário → tag acima do header + borda + inset + folga
+    const neededHead = Math.ceil(tagH + this.GAP + this.BORDER + this.INSET + this.SAFETY);
     this.tagHeadroom = Math.max(this.MIN_HEADROOM, neededHead);
 
+    // contorno: começa “colado” ao início do bloco (acima do header)
     const top = Math.max(0, Math.round(headerTop - this.tagHeadroom));
 
-    // base do contorno = fim da última linha do último grupo
+    // base do contorno: fim da última linha do último grupo
     const lastRow = this.tableRoot.nativeElement
       .querySelector('.group:last-of-type .grid:last-of-type') as HTMLElement | null;
     const lastBottom = lastRow
       ? lastRow.getBoundingClientRect().bottom - cRect.top
       : container.scrollHeight;
-
     const height = Math.max(0, Math.round(lastBottom - top));
 
-    // 3) TAG: sempre DENTRO da largura útil do contorno
+    // largura útil dentro do contorno (limite da TAG)
     const innerW = Math.max(0, width - 2 * (this.BORDER + this.INSET));
     const MIN_TAG_W = 72, MAX_TAG_W = 160;
     const tagMaxWidth = Math.min(Math.max(MIN_TAG_W, innerW), MAX_TAG_W);
 
-    // top da TAG: dentro do contorno e acima do header
+    // TAG sempre DENTRO do contorno e ACIMA do header
     const tagTop = top + this.BORDER + this.INSET;
 
-    // centro da TAG com clamp nas laterais do contorno
+    // centro da TAG clamped nas laterais do contorno
     const measuredTagW = Math.min(tagMaxWidth, (this.tagRef?.nativeElement?.offsetWidth || tagMaxWidth));
     const half = measuredTagW / 2;
     let center = left + width / 2;
@@ -157,13 +159,12 @@ export class BandeirasTabelaComponent implements AfterViewInit {
     const maxCenter = left + width - (this.BORDER + this.INSET) - half;
     center = Math.max(minCenter, Math.min(center, maxCenter));
 
-    // 4) aplica
     this.overlay = { left: Math.floor(left), width: Math.floor(width), center, top, height, tagTop, tagMaxWidth };
 
-    // 5) segunda passagem p/ estabilizar caso a TAG mude (quebra de linha)
+    // segunda passada para estabilizar caso a TAG mude de tamanho
     requestAnimationFrame(() => {
-      const tagH2 = this.tagRef?.nativeElement?.offsetHeight || tagH;
-      const need2 = Math.ceil(tagH2 + this.GAP + this.BORDER + this.INSET);
+      const newH = this.tagRef?.nativeElement?.offsetHeight || tagH;
+      const need2 = Math.ceil(newH + this.GAP + this.BORDER + this.INSET + this.SAFETY);
       const next = Math.max(this.MIN_HEADROOM, need2);
       if (Math.abs(next - this.tagHeadroom) >= 1) {
         this.tagHeadroom = next;

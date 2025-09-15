@@ -5,10 +5,13 @@
   --zebra: #f0f2f5;
   --current-border: #4f4f4f;
   --title-blue: #2c4aa5;
+
+  /* novo: gutter horizontal único usado por todo o conteúdo */
+  --gutter: 8px;
+
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 }
 
-/* modo embutido */
 :host.embedded {
   width: 100%;
   box-sizing: border-box;
@@ -27,7 +30,7 @@
   padding: 0;
   box-sizing: border-box;
   overflow-x: hidden;
-  /* 👉 impede estourar nas laterais */
+  /* não estoura laterais */
   overflow-y: visible;
 }
 
@@ -36,15 +39,16 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  padding: 0 !important;
   margin: 0 !important;
   max-width: 100%;
   overflow: visible;
   /* sem scroll interno */
   -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
 
-  /* headroom é aplicado aqui pelo TS (altura da TAG + gaps) */
+  /* headroom para a TAG + GUTTER HORIZONTAL AQUI ✅ */
   padding-top: var(--headroom, 0px);
+  padding-inline: var(--gutter);
 }
 
 .grid {
@@ -57,7 +61,7 @@
   box-sizing: border-box;
 }
 
-/* Alinhar títulos e níveis na MESMA LINHA */
+/* Alinhamento em linha dos headers */
 .header-row {
   margin-bottom: 2px;
   align-items: center;
@@ -108,7 +112,7 @@
 
 .row-zebra .left-col,
 .row-zebra .cell {
-  background: var(--zebra);
+  background: #f0f2f5;
 }
 
 .group .grid:not(:last-child) .cell,
@@ -127,7 +131,7 @@
   position: absolute;
   top: 0;
   /* definido no TS */
-  border: 2px solid var(--current-border);
+  border: 2px solid #4f4f4f;
   border-radius: 6px;
   background: transparent;
   box-sizing: border-box;
@@ -159,10 +163,9 @@
   &::after {
     content: none;
   }
-
-  /* sem seta */
 }
 
+/* cores dos níveis */
 .level-1 {
   color: #1f3b82;
 }
@@ -179,7 +182,7 @@
   color: #b17900;
 }
 
-/* responsivo */
+/* Responsivo */
 :host {
   --left-col: 168px;
   --min-level: 92px;

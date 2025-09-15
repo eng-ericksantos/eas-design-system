@@ -8,7 +8,7 @@
     (scroll)="reflowOverlay()"
     [style.--headroom.px]="tagHeadroom"
   >
-    <!-- Contorno + etiqueta -->
+    <!-- Contorno da coluna atual -->
     <div
       class="current-col"
       [style.left.px]="overlay.left"
@@ -17,6 +17,7 @@
       [style.height.px]="overlay.height"
     ></div>
 
+    <!-- TAG “Nível atual” (sempre DENTRO do contorno e ACIMA do header) -->
     <div
       #tagRef
       class="current-tag"
@@ -27,7 +28,7 @@
       Nível atual
     </div>
 
-    <!-- Cabeçalho -->
+    <!-- Cabeçalho (Maquininha) -->
     <div
       class="header-row grid"
       #headerRow
@@ -67,13 +68,15 @@
           class="cell"
           *ngFor="let v of taxa.niveis; let c = index"
           [class.is-current]="c === nivelAtual"
-        >{{ v }}</div>
+        >
+          {{ v }}
+        </div>
       </div>
     </div>
 
     <div class="divider"></div>
 
-    <!-- 'Online' alinhado ao cabeçalho -->
+    <!-- Cabeçalho (Online) -->
     <div
       class="header-row grid"
       #headerRow
@@ -83,30 +86,22 @@
         class="level-head level-1"
         #levelHead
         (click)="setNivelAtual(0)"
-      >
-        Nível 1
-      </div>
+      >Nível 1</div>
       <div
         class="level-head level-2"
         #levelHead
         (click)="setNivelAtual(1)"
-      >
-        Nível 2
-      </div>
+      >Nível 2</div>
       <div
         class="level-head level-3"
         #levelHead
         (click)="setNivelAtual(2)"
-      >
-        Nível 3
-      </div>
+      >Nível 3</div>
       <div
         class="level-head level-4"
         #levelHead
         (click)="setNivelAtual(3)"
-      >
-        Nível 4
-      </div>
+      >Nível 4</div>
     </div>
 
     <!-- Grupo 2 -->
@@ -121,7 +116,9 @@
           class="cell"
           *ngFor="let v of taxa.niveis; let c = index"
           [class.is-current]="c === nivelAtual"
-        >{{ v }}</div>
+        >
+          {{ v }}
+        </div>
       </div>
     </div>
   </div>

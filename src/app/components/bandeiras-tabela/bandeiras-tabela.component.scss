@@ -5,77 +5,72 @@
   --zebra: #f0f2f5;
   --current-border: #4f4f4f;
   --title-blue: #2c4aa5;
-  font-family:
-    system-ui,
-    -apple-system,
-    Segoe UI,
-    Roboto,
-    Arial,
-    sans-serif;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+/* modo embutido */
+:host.embedded {
+  width: 100%;
+  box-sizing: border-box;
 }
 
 :host.embedded .scroll {
   padding: 0;
 }
 
-:host.embedded {
-  width: 100%;
-  box-sizing: border-box;
-}
-
 .rates-table {
   position: relative;
   background: #fff;
   width: 100%;
+  max-width: 100%;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  overflow: visible;
+  overflow-x: hidden;
+  /* 👉 impede estourar nas laterais */
+  overflow-y: visible;
 }
 
 .scroll {
-  // position: relative;
-  // overflow-y: visible;
-  // -webkit-overflow-scrolling: touch;
-  // padding: calc(10px + var(--headroom)) 8px 14px;
-  // display: flex;
-  // flex-direction: column;
-  // align-items: stretch;
-  // position: relative;
-  // overflow: visible;
-
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: stretch;
   padding: 0 !important;
   margin: 0 !important;
+  max-width: 100%;
   overflow: visible;
+  /* sem scroll interno */
   -webkit-overflow-scrolling: touch;
+
+  /* headroom é aplicado aqui pelo TS (altura da TAG + gaps) */
+  padding-top: var(--headroom, 0px);
 }
 
 .grid {
-  // width: 100%;
-  // display: grid;
-  // grid-template-columns: minmax(120px, var(--left-col)) repeat(4, minmax(var(--min-level), 1fr));
   width: 100%;
+  max-width: 100%;
   display: grid;
-  grid-template-columns:
-    minmax(120px, var(--left-col)) repeat(4, minmax(var(--min-level), 1fr));
+  grid-template-columns: minmax(120px, var(--left-col)) repeat(4, minmax(var(--min-level), 1fr));
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+/* Alinhar títulos e níveis na MESMA LINHA */
 .header-row {
   margin-bottom: 2px;
-  align-items: end;
+  align-items: center;
 }
 
 .level-head {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 10px 12px;
   font-weight: 700;
   font-size: 14px;
+  line-height: 20px;
   text-align: center;
 }
 
@@ -87,14 +82,15 @@
   font-weight: 700;
   color: var(--title-blue);
   font-size: 14px;
+  line-height: 20px;
 }
 
 .align-with-header {
   display: flex;
-  align-items: flex-end;
-  padding-bottom: 10px;
-  padding-left: 12px;
-  /* mantém alinhado com a primeira coluna */
+  align-items: center;
+  padding-bottom: 0;
+  padding-inline-start: 12px;
+  margin: 0;
 }
 
 .method {
@@ -110,47 +106,39 @@
   color: #2f3340;
 }
 
-/* Zebra SOMENTE nas linhas Débito e Parcelado 2-6 */
 .row-zebra .left-col,
 .row-zebra .cell {
   background: var(--zebra);
 }
 
-/* Linhas com divisória sutil */
 .group .grid:not(:last-child) .cell,
 .group .grid:not(:last-child) .left-col {
   border-bottom: 1px solid #e5e7eb;
 }
 
-/* Separador entre blocos */
 .divider {
   height: 16px;
   border-bottom: 1px solid #e5e7eb;
   margin: 8px 0;
 }
 
-/* Destaque da coluna atual: sem fill, só borda (como no Figma) */
-.is-current {
-  /* sem fundo aqui para o Figma */
-}
-
+/* Contorno da coluna atual */
 .current-col {
   position: absolute;
   top: 0;
+  /* definido no TS */
   border: 2px solid var(--current-border);
   border-radius: 6px;
   background: transparent;
-  box-shadow: none;
   box-sizing: border-box;
   pointer-events: none;
   z-index: 5;
 }
 
-/* tag: dentro do contorno e acima do header de níveis */
+/* TAG “Nível atual” – DENTRO do contorno e ACIMA do header */
 .current-tag {
   position: absolute;
   transform: translate(-50%, 0);
-  /* X ao centro da coluna */
   display: inline-block;
   padding: 6px 8px;
   background: #222;
@@ -163,20 +151,18 @@
   pointer-events: none;
   z-index: 6;
 
-  /* nunca cortar */
   min-width: 72px;
   white-space: normal;
   overflow-wrap: anywhere;
   word-break: break-word;
 
-  /* seta removida: tag fica 100% dentro do contorno */
   &::after {
     content: none;
   }
+
+  /* sem seta */
 }
 
-
-/* Cores dos títulos dos níveis */
 .level-1 {
   color: #1f3b82;
 }
@@ -193,14 +179,13 @@
   color: #b17900;
 }
 
-/* Responsivo */
-/* Desktop/Tablet normal — cabe sem scroll */
+/* responsivo */
 :host {
   --left-col: 168px;
   --min-level: 92px;
 }
 
-@media (max-width: 560px) {
+@media (max-width:560px) {
   :host {
     --left-col: 138px;
     --min-level: 72px;
@@ -218,7 +203,7 @@
   }
 }
 
-@media (max-width: 420px) {
+@media (max-width:420px) {
   :host {
     --left-col: 118px;
     --min-level: 58px;
@@ -230,9 +215,7 @@
   }
 }
 
-@media (max-width: 380px) {
-
-  /* celulares bem estreitos: pode surgir o scroll */
+@media (max-width:380px) {
   :host {
     --left-col: 110px;
     --min-level: 54px;

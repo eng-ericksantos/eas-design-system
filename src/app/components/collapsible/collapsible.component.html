@@ -2,7 +2,6 @@
   class="cf-card"
   [class.cf-open]="expanded"
 >
-  <!-- Cabeçalho clicável -->
   <button
     type="button"
     class="cf-header"
@@ -14,13 +13,9 @@
       class="cf-pill"
       [style.background]="accentColor"
     ></span>
-
     <span class="cf-title">{{ title }}</span>
-
     <span class="cf-spacer"></span>
-
     <span class="cf-action">{{ expanded ? 'ocultar' : 'exibir' }}</span>
-
     <svg
       class="cf-chevron"
       viewBox="0 0 24 24"
@@ -31,7 +26,6 @@
     </svg>
   </button>
 
-  <!-- Painel (recebe o conteúdo via ng-content) -->
   <div
     [id]="panelId"
     class="cf-panel"

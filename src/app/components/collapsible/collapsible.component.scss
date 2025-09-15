@@ -2,16 +2,16 @@
   display: block;
   --cf-bg: #ffffff;
   --cf-border: #d9d9e3;
-  --cf-shadow: 0 6px 10px rgba(0, 0, 0, 0.08);
+  --cf-shadow: 0 6px 10px rgba(0, 0, 0, .08);
   --cf-radius: 4px;
   --cf-text: #1d1d2b;
   --cf-accent: #091a46;
 
-  /* ajustes finos */
+  /* paddings iguais ao Figma */
   --cf-pad-x: 8px;
-  /* padding lateral igual ao Figma */
+  /* laterais do conteúdo */
   --cf-pad-y: 16px;
-  /* padding inferior */
+  /* inferior do conteúdo */
 }
 
 .cf-card {
@@ -19,11 +19,8 @@
   border: 1px solid var(--cf-border);
   border-radius: var(--cf-radius);
   box-shadow: var(--cf-shadow);
-  overflow: clip;
-}
-
-.cf-open {
   overflow: visible;
+  /* NUNCA cria scroll interno no card */
 }
 
 .cf-header {
@@ -33,11 +30,11 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  color: var(--cf-text);
   background: var(--cf-bg);
   border: 0;
   cursor: pointer;
   text-align: left;
-  color: var(--cf-text);
 
   &:focus-visible {
     outline: 2px solid #6ea8fe;
@@ -83,47 +80,42 @@
   transform: rotate(180deg);
 }
 
-/* painel */
+/* painel animado e sem scroll interno */
 .cf-panel {
   display: grid;
   grid-template-rows: 0fr;
   transition: grid-template-rows .22s ease, opacity .22s ease;
   opacity: 0;
-  overflow: clip;
+  overflow: hidden;
+  /* fechado */
 }
 
 .cf-panel.open {
-  grid-template-rows: 1fr;
+  grid-template-rows: auto;
+  /* acompanha altura do conteúdo */
   opacity: 1;
   overflow: visible;
+  /* aberto permite overlays aparecerem */
 }
 
-/* padding lateral de 8px e topo menor:
-   headroom (altura necessária p/ a tag) + 8px somente */
 .cf-panel-inner {
   min-height: 0;
+  box-sizing: border-box;
   padding: 0 var(--cf-pad-x) 0;
+  /* laterais */
   color: var(--cf-text);
   font-size: 14px;
 }
 
 .cf-panel.open .cf-panel-inner {
+  /* topo compacto + headroom para a TAG (definido pelo filho) */
   padding: calc(8px + var(--content-headroom, 0px)) var(--cf-pad-x) var(--cf-pad-y);
 }
 
-/* remove saltos de margem */
 .cf-panel-inner> :first-child {
   margin-top: 0;
 }
 
 .cf-panel-inner> :last-child {
   margin-bottom: 0;
-}
-
-
-/* Hover sutil opcional */
-@media (hover: hover) and (pointer: fine) {
-  .cf-header:hover {
-    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.02) inset;
-  }
 }

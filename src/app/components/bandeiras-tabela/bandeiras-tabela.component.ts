@@ -74,40 +74,36 @@ export class BandeirasTabelaComponent implements AfterViewInit {
     center: 0,
     top: 0,
     height: 0,
-    tagTop: 0,     // topo da TAG (fora do contorno; valor negativo em relação ao contorno)
+    tagTop: 0,     // topo (âncora) da TAG = mesmo topo do contorno (valor positivo e visível)
     tagWidth: 0,   // largura da TAG = largura interna do contorno (entre as bordas)
   };
 
   /**
-   * NÃO usamos mais “headroom” (spacer) no topo da `.scroll` — deixamos 0 para
-   * não criar espaço em branco. A tag está FORA do contorno, então não cobre o header.
+   * Não criamos mais “headroom” no topo (evita espaço fantasma).
+   * A TAG fica por fora do contorno, portanto não precisa empurrar o header.
    */
   tagHeadroom = 0;
 
-  // Constantes para ajuste fino
-  private readonly BORDER = 2;     // espessura da borda do contorno (CSS)
-  private readonly OUT_GAP = 2;    // distância visual da TAG até a borda do contorno (fora)
-  private readonly TOP_OFFSET = 0; // ajuste fino do topo do contorno vs. header (0 fica alinhado)
+  // Ajustes finos
+  private readonly BORDER = 2;     // espessura da borda do contorno (igual ao CSS)
+  private readonly OUT_GAP = 0;    // distância da TAG até a borda do contorno (0 = colada)
+  private readonly TOP_OFFSET = 0; // ajuste fino do topo do contorno vs header (0 = alinhado)
 
-  ngAfterViewInit(): void {
-    setTimeout(() => this.reflowOverlay());
-  }
+  ngAfterViewInit(): void { setTimeout(() => this.reflowOverlay()); }
 
   setNivelAtual(i: number) {
-    if (i >= 0 && i <= 3) {
-      this.nivelAtual = i;
-      this.reflowOverlay();
-    }
+    if (i >= 0 && i <= 3) { this.nivelAtual = i; this.reflowOverlay(); }
   }
 
   @HostListener('window:resize') onResize() { this.reflowOverlay(); }
   @HostListener('window:orientationchange') onOrient() { this.reflowOverlay(); }
 
   /**
-   * Lógica simples e confiável:
-   * - O contorno começa exatamente na altura do primeiro header (sem “gap”).
-   * - A TAG fica FORA do contorno, colada ao topo (com OUT_GAP).
-   * - A largura da TAG é a largura INTERNA do contorno (entre as duas bordas).
+   * Lógica:
+   * - Contorno começa na linha do primeiro header;
+   * - TAG é ancorada nesse topo (valor positivo) e *subida* via transform (-100%),
+   *   ficando por fora do retângulo e colada à borda (OUT_GAP=0).
+   * - Largura da TAG = largura entre as duas bordas do contorno.
    */
   reflowOverlay() {
     const heads = this.levelHeads?.toArray();
@@ -117,22 +113,22 @@ export class BandeirasTabelaComponent implements AfterViewInit {
     const container = this.scrollArea.nativeElement;
     const cRect = container.getBoundingClientRect();
 
-    // Coluna atual (usa o header “Nível X” como referência)
+    // Header “Nível X” define a coluna atual
     const hRect = heads[this.nivelAtual].nativeElement.getBoundingClientRect();
     let left = hRect.left - cRect.left + container.scrollLeft;
     let width = hRect.width;
 
-    // Clamps laterais
+    // Nunca extrapola o container
     left = Math.max(0, Math.min(left, container.clientWidth - width));
     width = Math.min(width, container.clientWidth - left);
 
     // Topo do primeiro header relativo ao container
     const headerTop = rows[0].nativeElement.getBoundingClientRect().top - cRect.top;
 
-    // 1) Contorno: começa no topo do header (opcionalmente deslocado por TOP_OFFSET)
+    // 1) Contorno começa no header (sem gap)
     const top = Math.max(0, Math.round(headerTop + this.TOP_OFFSET));
 
-    // 2) Base do contorno = fim da última linha
+    // 2) Fim do contorno (última linha)
     const lastRow = this.tableRoot.nativeElement
       .querySelector('.group:last-of-type .grid:last-of-type') as HTMLElement | null;
     const lastBottom = lastRow
@@ -140,16 +136,12 @@ export class BandeirasTabelaComponent implements AfterViewInit {
       : container.scrollHeight;
     const height = Math.max(0, Math.round(lastBottom - top));
 
-    // 3) Largura interna da coluna (entre as bordas) = largura da TAG
+    // 3) TAG: largura interna (entre as bordas) e topo ancorado ao do contorno
     const tagWidth = Math.max(0, width - 2 * this.BORDER);
-
-    // 4) Posição da TAG por fora do contorno (um pouco acima do topo)
-    const tagH = this.tagRef?.nativeElement?.offsetHeight || 24;
-    const tagTop = top - (tagH + this.OUT_GAP);
+    const tagTop = top + this.OUT_GAP; // ancorada no topo (valor positivo, visível)
 
     const center = left + width / 2;
 
-    // aplica
     this.overlay = {
       left: Math.floor(left),
       width: Math.floor(width),
@@ -157,7 +149,7 @@ export class BandeirasTabelaComponent implements AfterViewInit {
       top,
       height,
       tagTop,
-      tagWidth
+      tagWidth,
     };
   }
 }

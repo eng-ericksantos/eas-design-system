@@ -5,8 +5,17 @@
   --zebra: #f0f2f5;
   --current-border: #4f4f4f;
   --title-blue: #2c4aa5;
-  --gutter: 8px;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    Segoe UI,
+    Roboto,
+    Arial,
+    sans-serif;
+}
+
+:host.embedded .scroll {
+  padding: 0;
 }
 
 :host.embedded {
@@ -14,20 +23,14 @@
   box-sizing: border-box;
 }
 
-:host.embedded .scroll {
-  padding: 0;
-}
-
 .rates-table {
   position: relative;
   background: #fff;
   width: 100%;
-  max-width: 100%;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  overflow-x: hidden;
-  overflow-y: visible;
+  overflow: visible;
 }
 
 .scroll {
@@ -35,42 +38,32 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  padding: 0 !important;
   margin: 0 !important;
-  max-width: 100%;
   overflow: visible;
+  /* importante para tag/contorno */
   -webkit-overflow-scrolling: touch;
-  box-sizing: border-box;
-  padding-top: var(--headroom, 0px);
-  padding-inline: var(--gutter);
 }
 
 .grid {
   width: 100%;
-  max-width: 100%;
   display: grid;
-  grid-template-columns: minmax(120px, var(--left-col)) repeat(4, minmax(var(--min-level), 1fr));
+  grid-template-columns:
+    minmax(120px, var(--left-col)) repeat(4, minmax(var(--min-level), 1fr));
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* header fica ACIMA da borda, mas ainda abaixo da TAG */
 .header-row {
   margin-bottom: 2px;
-  align-items: center;
-  position: relative;
-  z-index: 6;
-  /* texto sempre acima do traço do contorno */
+  align-items: end;
 }
 
 .level-head {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   padding: 10px 12px;
   font-weight: 700;
   font-size: 14px;
-  line-height: 20px;
   text-align: center;
 }
 
@@ -82,15 +75,13 @@
   font-weight: 700;
   color: var(--title-blue);
   font-size: 14px;
-  line-height: 20px;
 }
 
 .align-with-header {
   display: flex;
-  align-items: center;
-  padding-bottom: 0;
-  padding-inline-start: 12px;
-  margin: 0;
+  align-items: flex-end;
+  padding-bottom: 10px;
+  padding-left: 12px;
 }
 
 .method {
@@ -108,7 +99,7 @@
 
 .row-zebra .left-col,
 .row-zebra .cell {
-  background: #f0f2f5;
+  background: var(--zebra);
 }
 
 .group .grid:not(:last-child) .cell,
@@ -122,22 +113,29 @@
   margin: 8px 0;
 }
 
-/* contorno fica sob header e sob tag */
+.is-current {}
+
+/* contorno */
 .current-col {
   position: absolute;
   top: 0;
   border: 2px solid #4f4f4f;
   border-radius: 6px;
   background: transparent;
+  box-shadow: none;
   box-sizing: border-box;
   pointer-events: none;
   z-index: 5;
 }
 
-/* TAG – colada no topo interno do contorno, largura controlada no TS */
+/* TAG “Nível atual” – fora do contorno, colada na borda superior */
 .current-tag {
   position: absolute;
-  transform: translate(-50%, 0);
+  left: 0;
+  top: 0;
+  /* ancoragem vem do TS via [style.left] e [style.top] */
+  transform: translate(-50%, -100%);
+  /* sobe 100% da própria altura */
   display: inline-block;
   padding: 6px 8px;
   background: #222;
@@ -148,9 +146,8 @@
   border-radius: 6px;
   text-align: center;
   pointer-events: none;
-  z-index: 7;
-  /* acima do header e do contorno */
-  box-sizing: border-box;
+  z-index: 10;
+  /* acima do contorno */
   min-width: 72px;
   white-space: normal;
   overflow-wrap: anywhere;
@@ -159,8 +156,11 @@
   &::after {
     content: none;
   }
+
+  /* sem seta */
 }
 
+/* Cores dos títulos */
 .level-1 {
   color: #1f3b82;
 }
@@ -177,13 +177,13 @@
   color: #b17900;
 }
 
-/* responsivo */
+/* Responsivo */
 :host {
   --left-col: 168px;
   --min-level: 92px;
 }
 
-@media (max-width:560px) {
+@media (max-width: 560px) {
   :host {
     --left-col: 138px;
     --min-level: 72px;
@@ -201,7 +201,7 @@
   }
 }
 
-@media (max-width:420px) {
+@media (max-width: 420px) {
   :host {
     --left-col: 118px;
     --min-level: 58px;
@@ -213,7 +213,7 @@
   }
 }
 
-@media (max-width:380px) {
+@media (max-width: 380px) {
   :host {
     --left-col: 110px;
     --min-level: 54px;

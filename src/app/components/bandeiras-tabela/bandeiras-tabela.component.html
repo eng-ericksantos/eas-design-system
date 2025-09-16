@@ -17,18 +17,18 @@
       [style.height.px]="overlay.height"
     ></div>
 
-    <!-- TAG “Nível atual” (sempre DENTRO e ACIMA do header) -->
+    <!-- TAG “Nível atual” FORA do contorno, colada no topo -->
     <div
       #tagRef
       class="current-tag"
       [style.left.px]="overlay.center"
       [style.top.px]="overlay.tagTop"
-      [style.max-width.px]="overlay.tagMaxWidth"
+      [style.width.px]="overlay.tagWidth"
     >
       Nível atual
     </div>
 
-    <!-- Cabeçalho (Maquininha) -->
+    <!-- Cabeçalho -->
     <div
       class="header-row grid"
       #headerRow
@@ -76,7 +76,7 @@
 
     <div class="divider"></div>
 
-    <!-- Cabeçalho (Online) -->
+    <!-- Cabeçalho 2 -->
     <div
       class="header-row grid"
       #headerRow

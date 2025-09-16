@@ -5,10 +5,7 @@
   --zebra: #f0f2f5;
   --current-border: #4f4f4f;
   --title-blue: #2c4aa5;
-
-  /* novo: gutter horizontal único usado por todo o conteúdo */
   --gutter: 8px;
-
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 }
 
@@ -30,7 +27,6 @@
   padding: 0;
   box-sizing: border-box;
   overflow-x: hidden;
-  /* não estoura laterais */
   overflow-y: visible;
 }
 
@@ -42,11 +38,8 @@
   margin: 0 !important;
   max-width: 100%;
   overflow: visible;
-  /* sem scroll interno */
   -webkit-overflow-scrolling: touch;
   box-sizing: border-box;
-
-  /* headroom para a TAG + GUTTER HORIZONTAL AQUI ✅ */
   padding-top: var(--headroom, 0px);
   padding-inline: var(--gutter);
 }
@@ -61,10 +54,13 @@
   box-sizing: border-box;
 }
 
-/* Alinhamento em linha dos headers */
+/* header fica ACIMA da borda, mas ainda abaixo da TAG */
 .header-row {
   margin-bottom: 2px;
   align-items: center;
+  position: relative;
+  z-index: 6;
+  /* texto sempre acima do traço do contorno */
 }
 
 .level-head {
@@ -126,11 +122,10 @@
   margin: 8px 0;
 }
 
-/* Contorno da coluna atual */
+/* contorno fica sob header e sob tag */
 .current-col {
   position: absolute;
   top: 0;
-  /* definido no TS */
   border: 2px solid #4f4f4f;
   border-radius: 6px;
   background: transparent;
@@ -139,7 +134,7 @@
   z-index: 5;
 }
 
-/* TAG “Nível atual” – DENTRO do contorno e ACIMA do header */
+/* TAG – colada no topo interno do contorno, largura controlada no TS */
 .current-tag {
   position: absolute;
   transform: translate(-50%, 0);
@@ -153,8 +148,9 @@
   border-radius: 6px;
   text-align: center;
   pointer-events: none;
-  z-index: 6;
-
+  z-index: 7;
+  /* acima do header e do contorno */
+  box-sizing: border-box;
   min-width: 72px;
   white-space: normal;
   overflow-wrap: anywhere;
@@ -165,7 +161,6 @@
   }
 }
 
-/* cores dos níveis */
 .level-1 {
   color: #1f3b82;
 }
@@ -182,7 +177,7 @@
   color: #b17900;
 }
 
-/* Responsivo */
+/* responsivo */
 :host {
   --left-col: 168px;
   --min-level: 92px;

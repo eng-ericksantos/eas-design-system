@@ -12,6 +12,7 @@
   /* laterais do conteúdo (AGORA ficam no filho .scroll) */
   --cf-pad-y: 16px;
   /* inferior do conteúdo */
+  font-family: "Montserrat", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
 }
 
 .cf-card {
@@ -43,6 +44,15 @@
   }
 }
 
+.cf-header .cf-action {
+  margin-right: 0px;
+}
+
+/* opcional: garante que o ícone não some com outro espaçamento do lado esquerdo */
+.cf-header .cf-chevron {
+  margin-left: 0;
+}
+
 .cf-pill {
   width: 43px;
   height: 24px;
@@ -52,7 +62,7 @@
 }
 
 .cf-title {
-  font-size: 18px;
+  font-size: 14px;
   font-weight: 600;
   line-height: 24px;
 }
@@ -62,6 +72,7 @@
 }
 
 .cf-action {
+  font-size: 12px;
   font-weight: 700;
   color: var(--cf-accent);
   margin-right: 8px;

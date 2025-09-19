@@ -74,19 +74,14 @@ export class BandeirasTabelaComponent implements AfterViewInit {
     center: 0,
     top: 0,
     height: 0,
-    tagTop: 0,     // topo (âncora) da TAG = mesmo topo do contorno (valor positivo e visível)
-    tagWidth: 0,   // largura da TAG = largura interna do contorno (entre as bordas)
+    tagTop: 0,     // topo (âncora) da TAG = topo do contorno (positivo)
+    tagLeft: 0,
+    tagWidth: 0,   // largura da TAG (vai igualar à largura TOTAL do contorno)
   };
 
-  /**
-   * Não criamos mais “headroom” no topo (evita espaço fantasma).
-   * A TAG fica por fora do contorno, portanto não precisa empurrar o header.
-   */
+  /** Nada de headroom no topo: 0 (evita espaço fantasma) */
   tagHeadroom = 0;
 
-  // Ajustes finos
-  private readonly BORDER = 2;     // espessura da borda do contorno (igual ao CSS)
-  private readonly OUT_GAP = 0;    // distância da TAG até a borda do contorno (0 = colada)
   private readonly TOP_OFFSET = 0; // ajuste fino do topo do contorno vs header (0 = alinhado)
 
   ngAfterViewInit(): void { setTimeout(() => this.reflowOverlay()); }
@@ -99,11 +94,9 @@ export class BandeirasTabelaComponent implements AfterViewInit {
   @HostListener('window:orientationchange') onOrient() { this.reflowOverlay(); }
 
   /**
-   * Lógica:
-   * - Contorno começa na linha do primeiro header;
-   * - TAG é ancorada nesse topo (valor positivo) e *subida* via transform (-100%),
-   *   ficando por fora do retângulo e colada à borda (OUT_GAP=0).
-   * - Largura da TAG = largura entre as duas bordas do contorno.
+   * - Contorno começa no topo do primeiro header;
+   * - TAG é ancorada nesse topo e o CSS a eleva com translateY(-100%);
+   * - Largura da TAG = largura TOTAL do contorno (inclui as bordas) para alinhar borda-a-borda.
    */
   reflowOverlay() {
     const heads = this.levelHeads?.toArray();
@@ -113,22 +106,22 @@ export class BandeirasTabelaComponent implements AfterViewInit {
     const container = this.scrollArea.nativeElement;
     const cRect = container.getBoundingClientRect();
 
-    // Header “Nível X” define a coluna atual
+    // Coluna atual pela célula “Nível X”
     const hRect = heads[this.nivelAtual].nativeElement.getBoundingClientRect();
     let left = hRect.left - cRect.left + container.scrollLeft;
     let width = hRect.width;
 
-    // Nunca extrapola o container
+    // Não extrapola container
     left = Math.max(0, Math.min(left, container.clientWidth - width));
     width = Math.min(width, container.clientWidth - left);
 
     // Topo do primeiro header relativo ao container
     const headerTop = rows[0].nativeElement.getBoundingClientRect().top - cRect.top;
 
-    // 1) Contorno começa no header (sem gap)
+    // 1) Contorno começa no header
     const top = Math.max(0, Math.round(headerTop + this.TOP_OFFSET));
 
-    // 2) Fim do contorno (última linha)
+    // 2) Altura do contorno até a última linha
     const lastRow = this.tableRoot.nativeElement
       .querySelector('.group:last-of-type .grid:last-of-type') as HTMLElement | null;
     const lastBottom = lastRow
@@ -136,11 +129,17 @@ export class BandeirasTabelaComponent implements AfterViewInit {
       : container.scrollHeight;
     const height = Math.max(0, Math.round(lastBottom - top));
 
-    // 3) TAG: largura interna (entre as bordas) e topo ancorado ao do contorno
-    const tagWidth = Math.max(0, width - 2 * this.BORDER);
-    const tagTop = top + this.OUT_GAP; // ancorada no topo (valor positivo, visível)
+    // 3) TAG: mesma largura TOTAL do contorno (alinhada com as bordas)
+    //    (como a tag usa box-sizing: border-box, a largura informada já considera o padding)
+    // const tagWidth = Math.max(0, width);
+
+    // 4) TAG colada ao topo do contorno (o CSS sobe -100%)
+    const tagTop = top;
 
     const center = left + width / 2;
+    const tagLeft = Math.round(left);
+    const tagWidth = Math.round(width);
+
 
     this.overlay = {
       left: Math.floor(left),
@@ -149,6 +148,7 @@ export class BandeirasTabelaComponent implements AfterViewInit {
       top,
       height,
       tagTop,
+      tagLeft,
       tagWidth,
     };
   }

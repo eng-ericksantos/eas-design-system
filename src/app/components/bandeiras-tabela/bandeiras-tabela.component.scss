@@ -4,14 +4,25 @@
   --min-level: 92px;
   --zebra: #f0f2f5;
   --current-border: #4f4f4f;
-  --title-blue: #2c4aa5;
-  font-family:
-    system-ui,
-    -apple-system,
-    Segoe UI,
-    Roboto,
-    Arial,
-    sans-serif;
+  --title-blue: #00003C;
+  --cell-grey: #4F4F4F;
+  font-family: "Montserrat", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+/* Libera overflow e prepara stacking context para a TAG não ser cortada e ficar acima do header */
+:host ::ng-deep .cf-card {
+  position: relative;
+}
+
+:host ::ng-deep .cf-header {
+  position: relative;
+  z-index: 1;
+}
+
+:host ::ng-deep .cf-panel-inner {
+  position: relative;
+  z-index: 2;
+  overflow: visible !important;
 }
 
 :host.embedded .scroll {
@@ -41,7 +52,6 @@
   padding: 0 !important;
   margin: 0 !important;
   overflow: visible;
-  /* importante para tag/contorno */
   -webkit-overflow-scrolling: touch;
 }
 
@@ -62,8 +72,8 @@
 
 .level-head {
   padding: 10px 12px;
-  font-weight: 700;
-  font-size: 14px;
+  font-weight: 600;
+  font-size: 12px;
   text-align: center;
 }
 
@@ -72,9 +82,9 @@
 }
 
 .group-title {
-  font-weight: 700;
+  font-weight: 600;
   color: var(--title-blue);
-  font-size: 14px;
+  font-size: 10px;
 }
 
 .align-with-header {
@@ -82,6 +92,7 @@
   align-items: flex-end;
   padding-bottom: 10px;
   padding-left: 12px;
+  /* alinha com a primeira coluna */
 }
 
 .method {
@@ -94,7 +105,7 @@
   padding: 10px 10px;
   font-size: 14px;
   text-align: center;
-  color: #2f3340;
+  color: --cell-grey;
 }
 
 .row-zebra .left-col,
@@ -115,12 +126,12 @@
 
 .is-current {}
 
-/* contorno */
+/* contorno da coluna atual */
 .current-col {
   position: absolute;
   top: 0;
   border: 2px solid #4f4f4f;
-  border-radius: 6px;
+  border-radius: 0px 0px 6px 6px;
   background: transparent;
   box-shadow: none;
   box-sizing: border-box;
@@ -128,29 +139,37 @@
   z-index: 5;
 }
 
-/* TAG “Nível atual” – fora do contorno, colada na borda superior */
+/* TAG “Nível atual” – fora do contorno, com MESMA largura e colada ao topo */
 .current-tag {
   position: absolute;
   left: 0;
   top: 0;
-  /* ancoragem vem do TS via [style.left] e [style.top] */
-  transform: translate(-50%, -100%);
-  /* sobe 100% da própria altura */
-  display: inline-block;
-  padding: 6px 8px;
+  /* âncora vem do TS */
+  // transform: translate(-50%, -90%);
+  transform: translateY(-90%);
+  width: 100%;
+  /* cola na borda superior (sem gap) */
+  // display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 6px;
+  box-sizing: border-box;
+  /* garante que width do TS já inclui padding */
   background: #222;
   color: #fff;
   font-weight: 700;
   font-size: 12px;
-  line-height: 1.2;
-  border-radius: 6px;
+  line-height: 1.05;
+  border-radius: 6px 6px 0px 0px;
   text-align: center;
   pointer-events: none;
-  z-index: 10;
-  /* acima do contorno */
-  min-width: 72px;
-  white-space: normal;
-  overflow-wrap: anywhere;
+  z-index: 1000;
+  /* Sem min-width para não “sobrar” em colunas estreitas; width vem do TS */
+  min-width: 0;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
   word-break: break-word;
 
   &::after {
@@ -162,19 +181,19 @@
 
 /* Cores dos títulos */
 .level-1 {
-  color: #1f3b82;
+  color: #00003C;
 }
 
 .level-2 {
-  color: #8a8f99;
+  color: #9E9E9E;
 }
 
 .level-3 {
-  color: #3b6ee9;
+  color: #7495B8;
 }
 
 .level-4 {
-  color: #b17900;
+  color: #6D5322;
 }
 
 /* Responsivo */
@@ -191,8 +210,9 @@
 
   .level-head,
   .cell {
-    font-size: 13px;
-    padding: 8px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 8px 8px 10px 8px;
   }
 
   .method,

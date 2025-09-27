@@ -1,247 +1,156 @@
-:host {
-  display: block;
-  --left-col: 168px;
-  --min-level: 92px;
-  --zebra: #f0f2f5;
-  --current-border: #4f4f4f;
-  --title-blue: #00003C;
-  --cell-grey: #4F4F4F;
-  font-family: "Montserrat", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-}
-
-/* Libera overflow e prepara stacking context para a TAG não ser cortada e ficar acima do header */
-:host ::ng-deep .cf-card {
-  position: relative;
-}
-
-:host ::ng-deep .cf-header {
-  position: relative;
-  z-index: 1;
-}
-
-:host ::ng-deep .cf-panel-inner {
-  position: relative;
-  z-index: 2;
-  overflow: visible !important;
-}
-
-:host.embedded .scroll {
-  padding: 0;
-}
-
-:host.embedded {
+// BEM Block: .rates-table-container
+.rates-table-container {
   width: 100%;
-  box-sizing: border-box;
+  padding-top: 30px;
 }
 
+// BEM Block: .rates-table
 .rates-table {
-  position: relative;
-  background: #fff;
+  // --- Variáveis de Estilo ---
+  --text-primary: #333;
+  --text-secondary: #888;
+  --text-active: #007bff;
+  --outline-color: #333;
+  --outline-width: 2px;
+  --outline-radius: 12px;
+  --badge-bg: #333;
+  --badge-color: #fff;
+  --separator-color: #e0e0e0;
+  // CORREÇÃO: Cor do fundo da linha alterada
+  --row-highlight-bg: #cfcfcf;
+
+  // --- Estilos Base ---
   width: 100%;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  overflow: visible;
-}
+  border-collapse: separate;
+  border-spacing: 0;
+  font-family: system-ui, -apple-system, sans-serif;
 
-.scroll {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  padding: 0 !important;
-  margin: 0 !important;
-  overflow: visible;
-  -webkit-overflow-scrolling: touch;
-}
-
-.grid {
-  width: 100%;
-  display: grid;
-  grid-template-columns:
-    minmax(120px, var(--left-col)) repeat(4, minmax(var(--min-level), 1fr));
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-.header-row {
-  margin-bottom: 2px;
-  align-items: end;
-}
-
-.level-head {
-  padding: 10px 12px;
-  font-weight: 600;
-  font-size: 12px;
-  text-align: center;
-}
-
-.left-col {
-  padding: 10px 10px 10px 12px;
-}
-
-.group-title {
-  font-weight: 600;
-  color: var(--title-blue);
-  font-size: 10px;
-}
-
-.align-with-header {
-  display: flex;
-  align-items: flex-end;
-  padding-bottom: 10px;
-  padding-left: 12px;
-  /* alinha com a primeira coluna */
-}
-
-.method {
-  font-weight: 600;
-  color: #2f3340;
-  font-size: 14px;
-}
-
-.cell {
-  padding: 10px 10px;
-  font-size: 14px;
-  text-align: center;
-  color: --cell-grey;
-}
-
-.row-zebra .left-col,
-.row-zebra .cell {
-  background: var(--zebra);
-}
-
-.group .grid:not(:last-child) .cell,
-.group .grid:not(:last-child) .left-col {
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.divider {
-  height: 16px;
-  border-bottom: 1px solid #e5e7eb;
-  margin: 8px 0;
-}
-
-.is-current {}
-
-/* contorno da coluna atual */
-.current-col {
-  position: absolute;
-  top: 0;
-  border: 2px solid #4f4f4f;
-  border-radius: 0px 0px 6px 6px;
-  background: transparent;
-  box-shadow: none;
-  box-sizing: border-box;
-  pointer-events: none;
-  z-index: 5;
-}
-
-/* TAG “Nível atual” – fora do contorno, com MESMA largura e colada ao topo */
-.current-tag {
-  position: absolute;
-  left: 0;
-  top: 0;
-  /* âncora vem do TS */
-  // transform: translate(-50%, -90%);
-  transform: translateY(-90%);
-  width: 100%;
-  /* cola na borda superior (sem gap) */
-  // display: inline-block;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 4px 6px;
-  box-sizing: border-box;
-  /* garante que width do TS já inclui padding */
-  background: #222;
-  color: #fff;
-  font-weight: 700;
-  font-size: 12px;
-  line-height: 1.05;
-  border-radius: 6px 6px 0px 0px;
-  text-align: center;
-  pointer-events: none;
-  z-index: 1000;
-  /* Sem min-width para não “sobrar” em colunas estreitas; width vem do TS */
-  min-width: 0;
-  max-width: 100%;
-  white-space: nowrap;
-  overflow: hidden;
-  word-break: break-word;
-
-  &::after {
-    content: none;
+  // Espaçamento e linha divisória
+  &__tr--subsequent-header>th {
+    padding-top: 24px;
   }
 
-  /* sem seta */
-}
-
-/* Cores dos títulos */
-.level-1 {
-  color: #00003C;
-}
-
-.level-2 {
-  color: #9E9E9E;
-}
-
-.level-3 {
-  color: #7495B8;
-}
-
-.level-4 {
-  color: #6D5322;
-}
-
-/* Responsivo */
-:host {
-  --left-col: 168px;
-  --min-level: 92px;
-}
-
-@media (max-width: 560px) {
-  :host {
-    --left-col: 138px;
-    --min-level: 72px;
+  &__tr--group-last-data>td {
+    border-bottom: 1px solid var(--separator-color);
   }
 
-  .level-head,
-  .cell {
-    font-size: 12px;
+  // CORREÇÃO: Fundo cinza aplicado nas linhas PARES
+  &__tr--group-header>th,
+  &__tr--data:nth-child(odd)>td {
+    background-color: #fff;
+  }
+
+  &__tr--data:nth-child(even)>td {
+    background-color: var(--row-highlight-bg);
+  }
+
+  &__tr--data:nth-child(even)>td[class*="--active-"] {
+    background-color: var(--row-highlight-bg);
+  }
+
+  // Cabeçalhos
+  &__th--group-title {
+    color: var(--text-active);
+    font-weight: bold;
+    font-size: 16px;
+    text-align: left;
+  }
+
+  &__th--level {
+    color: var(--text-secondary);
+    font-weight: 500;
+    font-size: 16px;
+    text-align: center;
+  }
+
+  &__th,
+  &__td {
+    padding: 16px 5px;
+    vertical-align: middle;
+  }
+
+  // Células
+  &__td--data-cell {
+    text-align: center;
+  }
+
+  &__td--method-title {
+    text-align: left;
+    color: var(--text-primary);
+  }
+
+  // --- Estilos do Contorno e Badge ---
+  &__active-badge {
+    position: absolute;
+    top: -22px;
+    left: calc(-1 * var(--outline-width));
+    right: calc(-1 * var(--outline-width));
+    background-color: var(--badge-bg);
+    color: var(--badge-color);
+    padding: 6px;
+    border-top-left-radius: var(--outline-radius);
+    border-top-right-radius: var(--outline-radius);
+    font-size: 14px;
     font-weight: 600;
-    padding: 8px 8px 10px 8px;
+    text-align: center;
+    line-height: 1.2;
+    z-index: 3;
+    white-space: nowrap;
+    font-size: clamp(10px, 2.5vw, 14px);
   }
 
-  .method,
-  .group-title {
-    font-size: 13px;
-  }
-}
-
-@media (max-width: 420px) {
-  :host {
-    --left-col: 118px;
-    --min-level: 58px;
+  &__cell--active-top {
+    position: relative;
   }
 
-  .level-head,
-  .cell {
-    padding: 6px 6px;
-  }
-}
-
-@media (max-width: 380px) {
-  :host {
-    --left-col: 110px;
-    --min-level: 54px;
+  &__cell--active-top,
+  &__cell--active-middle,
+  &__cell--active-bottom {
+    position: relative;
+    z-index: 2;
   }
 
-  .level-head,
-  .cell {
-    font-size: 12.5px;
-    padding: 6px 6px;
+  &__cell--active-top {
+    // CORREÇÃO: Borda superior removida para conectar com o badge
+    border-left: var(--outline-width) solid var(--outline-color);
+    border-right: var(--outline-width) solid var(--outline-color);
+  }
+
+  &__cell--active-middle {
+    border-left: var(--outline-width) solid var(--outline-color);
+    border-right: var(--outline-width) solid var(--outline-color);
+  }
+
+  &__cell--active-bottom {
+    border-bottom: var(--outline-width) solid var(--outline-color);
+    border-left: var(--outline-width) solid var(--outline-color);
+    border-right: var(--outline-width) solid var(--outline-color);
+    border-bottom-left-radius: var(--outline-radius);
+    border-bottom-right-radius: var(--outline-radius);
+  }
+
+  &__cell--active-text {
+    color: var(--text-active);
+    font-weight: bold;
+  }
+
+  // --- Responsividade ---
+  @media (max-width: 380px) {
+
+    &__th,
+    &__td {
+      padding: 12px 4px;
+      font-size: 12px;
+    }
+
+    &__th--group-title,
+    &__th--level {
+      font-size: 13px;
+    }
+
+    &__active-badge {
+      padding: 5px;
+      top: -19px;
+    }
   }
 }

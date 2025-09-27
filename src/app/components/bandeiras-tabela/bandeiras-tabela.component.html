@@ -1,125 +1,45 @@
-<div
-  class="rates-table"
-  #tableRoot
->
-  <div
-    class="scroll"
-    #scrollArea
-    (scroll)="reflowOverlay()"
-    [style.--headroom.px]="tagHeadroom"
-  >
-    <!-- Contorno da coluna atual -->
-    <div
-      class="current-col"
-      [style.left.px]="overlay.left"
-      [style.width.px]="overlay.width"
-      [style.top.px]="overlay.top"
-      [style.height.px]="overlay.height"
-    ></div>
+<div class="rates-table-container">
+  <table class="rates-table">
+    <tbody class="rates-table__tbody">
+      <ng-container *ngFor="let group of mockData.grupos; let isFirstGroup = first; let isLastGroup = last">
 
-    <!-- TAG “Nível atual” FORA do contorno, colada no topo -->
-    <div
-      #tagRef
-      class="current-tag"
-      [style.left.px]="overlay.tagLeft"
-      [style.top.px]="overlay.tagTop"
-      [style.width.px]="overlay.tagWidth"
-    >
-      Nível atual
-    </div>
-
-    <!-- Cabeçalho -->
-    <div
-      class="header-row grid"
-      #headerRow
-    >
-      <div class="left-col group-title align-with-header">Maquininha</div>
-      <div
-        class="level-head level-1"
-        #levelHead
-        (click)="setNivelAtual(0)"
-      >Nível 1</div>
-      <div
-        class="level-head level-2"
-        #levelHead
-        (click)="setNivelAtual(1)"
-      >Nível 2</div>
-      <div
-        class="level-head level-3"
-        #levelHead
-        (click)="setNivelAtual(2)"
-      >Nível 3</div>
-      <div
-        class="level-head level-4"
-        #levelHead
-        (click)="setNivelAtual(3)"
-      >Nível 4</div>
-    </div>
-
-    <!-- Grupo 1 -->
-    <div class="group">
-      <div
-        class="grid"
-        *ngFor="let taxa of selectedBrand.grupos[0].taxas; let r = index"
-        [class.row-zebra]="r === 0 || r === 2"
-      >
-        <div class="left-col method">{{ taxa.metodo }}</div>
-        <div
-          class="cell"
-          *ngFor="let v of taxa.niveis; let c = index"
-          [class.is-current]="c === nivelAtual"
+        <tr
+          class="rates-table__tr rates-table__tr--group-header"
+          [class.rates-table__tr--subsequent-header]="!isFirstGroup"
         >
-          {{ v }}
-        </div>
-      </div>
-    </div>
+          <th class="rates-table__th rates-table__th--group-title">{{ group.titulo }}</th>
+          <th
+            *ngFor="let level of displayedLevels; let i = index"
+            class="rates-table__th rates-table__th--level"
+            [class.rates-table__cell--active-text]="(i + 1) === activeLevel"
+            [class.rates-table__cell--active-top]="(i + 1) === activeLevel && isFirstGroup"
+            [class.rates-table__cell--active-middle]="(i + 1) === activeLevel && !isFirstGroup"
+          >
 
-    <div class="divider"></div>
+            <span
+              *ngIf="(i + 1) === activeLevel && isFirstGroup"
+              class="rates-table__active-badge"
+            >Nível atual</span>
+            Nível {{ i + 1 }}
+          </th>
+        </tr>
 
-    <!-- Cabeçalho 2 -->
-    <div
-      class="header-row grid"
-      #headerRow
-    >
-      <div class="left-col group-title align-with-header">Online</div>
-      <div
-        class="level-head level-1"
-        #levelHead
-        (click)="setNivelAtual(0)"
-      >Nível 1</div>
-      <div
-        class="level-head level-2"
-        #levelHead
-        (click)="setNivelAtual(1)"
-      >Nível 2</div>
-      <div
-        class="level-head level-3"
-        #levelHead
-        (click)="setNivelAtual(2)"
-      >Nível 3</div>
-      <div
-        class="level-head level-4"
-        #levelHead
-        (click)="setNivelAtual(3)"
-      >Nível 4</div>
-    </div>
-
-    <!-- Grupo 2 -->
-    <div class="group">
-      <div
-        class="grid"
-        *ngFor="let taxa of selectedBrand.grupos[1].taxas; let r = index"
-        [class.row-zebra]="r === 0 || r === 2"
-      >
-        <div class="left-col method">{{ taxa.metodo }}</div>
-        <div
-          class="cell"
-          *ngFor="let v of taxa.niveis; let c = index"
-          [class.is-current]="c === nivelAtual"
+        <tr
+          *ngFor="let taxa of group.taxas; let isLastTaxa = last"
+          class="rates-table__tr rates-table__tr--data"
+          [class.rates-table__tr--group-last-data]="isLastTaxa && !isLastGroup"
         >
-          {{ v }}
-        </div>
-      </div>
-    </div>
-  </div>
+          <td class="rates-table__td rates-table__td--method-title">{{ taxa.metodo }}</td>
+          <td
+            *ngFor="let nivel of taxa.niveis; let j = index"
+            class="rates-table__td rates-table__td--data-cell"
+            [class.rates-table__cell--active-middle]="(j + 1) === activeLevel && !(isLastGroup && isLastTaxa)"
+            [class.rates-table__cell--active-bottom]="(j + 1) === activeLevel && isLastGroup && isLastTaxa"
+          >
+            {{ nivel }}
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
 </div>

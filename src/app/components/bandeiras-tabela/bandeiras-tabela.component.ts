@@ -10,11 +10,8 @@ import {
 })
 export class BandeirasTabelaComponent {
 
-  // AJUSTADO: O controle agora é feito com números de 1 a 4.
-  public activeLevel = 3;
-
-  // AJUSTADO: O mock data agora reflete o texto "Parcelado 7-12" do Figma.
   public mockData = {
+    nivelAtual: 4,
     nome: 'Mastercard',
     bandeira: 'mastercard',
     grupos: [

@@ -1,29 +1,27 @@
-// BEM Block: .rates-table-container
 .rates-table-container {
   width: 100%;
   padding-top: 30px;
 }
 
-// BEM Block: .rates-table
 .rates-table {
   // --- Variáveis de Estilo ---
-  --text-primary: #333;
+  --text-primary: #4F4F4F;
   --text-secondary: #888;
-  --text-active: #007bff;
+  --text-active: #00003C;
   --outline-color: #333;
   --outline-width: 2px;
-  --outline-radius: 12px;
+  --outline-radius: 4px;
   --badge-bg: #333;
   --badge-color: #fff;
   --separator-color: #e0e0e0;
-  // CORREÇÃO: Cor do fundo da linha alterada
-  --row-highlight-bg: #cfcfcf;
+  --row-highlight-bg: #EDEDED;
 
   // --- Estilos Base ---
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: 'Montserrat', sans-serif;
+  background-color: var(--row-highlight-bg);
 
   // Espaçamento e linha divisória
   &__tr--subsequent-header>th {
@@ -34,7 +32,7 @@
     border-bottom: 1px solid var(--separator-color);
   }
 
-  // CORREÇÃO: Fundo cinza aplicado nas linhas PARES
+  // Fundo cinza aplicado nas linhas PARES
   &__tr--group-header>th,
   &__tr--data:nth-child(odd)>td {
     background-color: #fff;
@@ -51,16 +49,40 @@
   // Cabeçalhos
   &__th--group-title {
     color: var(--text-active);
-    font-weight: bold;
-    font-size: 16px;
+    font-weight: 600;
+    font-size: 10px;
     text-align: left;
   }
 
   &__th--level {
     color: var(--text-secondary);
-    font-weight: 500;
-    font-size: 16px;
     text-align: center;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0;
+
+    // Cores específicas por nível
+    &:nth-child(2) {
+      color: #00003C;
+    }
+
+    // Nível 1
+    &:nth-child(3) {
+      color: #9E9E9E;
+    }
+
+    // Nível 2
+    &:nth-child(4) {
+      color: #7495B8;
+    }
+
+    // Nível 3
+    &:nth-child(5) {
+      color: #6D5322;
+    }
+
+    // Nível 4
   }
 
   &__th,
@@ -72,14 +94,21 @@
   // Células
   &__td--data-cell {
     text-align: center;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--text-primary);
   }
 
   &__td--method-title {
     text-align: left;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 16px;
     color: var(--text-primary);
   }
 
-  // --- Estilos do Contorno e Badge ---
+  // Estilos do Contorno e Badge
   &__active-badge {
     position: absolute;
     top: -22px;
@@ -110,8 +139,8 @@
     z-index: 2;
   }
 
+  // Borda superior removida para conectar com o badge
   &__cell--active-top {
-    // CORREÇÃO: Borda superior removida para conectar com o badge
     border-left: var(--outline-width) solid var(--outline-color);
     border-right: var(--outline-width) solid var(--outline-color);
   }
@@ -134,7 +163,7 @@
     font-weight: bold;
   }
 
-  // --- Responsividade ---
+  // Responsividade
   @media (max-width: 380px) {
 
     &__th,

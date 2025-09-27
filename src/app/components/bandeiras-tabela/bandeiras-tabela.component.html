@@ -11,13 +11,13 @@
           <th
             *ngFor="let level of displayedLevels; let i = index"
             class="rates-table__th rates-table__th--level"
-            [class.rates-table__cell--active-text]="(i + 1) === activeLevel"
-            [class.rates-table__cell--active-top]="(i + 1) === activeLevel && isFirstGroup"
-            [class.rates-table__cell--active-middle]="(i + 1) === activeLevel && !isFirstGroup"
+            [class.rates-table__cell--active-text]="(i + 1) === mockData.nivelAtual"
+            [class.rates-table__cell--active-top]="(i + 1) === mockData.nivelAtual && isFirstGroup"
+            [class.rates-table__cell--active-middle]="(i + 1) === mockData.nivelAtual && !isFirstGroup"
           >
 
             <span
-              *ngIf="(i + 1) === activeLevel && isFirstGroup"
+              *ngIf="(i + 1) === mockData.nivelAtual && isFirstGroup"
               class="rates-table__active-badge"
             >Nível atual</span>
             Nível {{ i + 1 }}
@@ -33,8 +33,8 @@
           <td
             *ngFor="let nivel of taxa.niveis; let j = index"
             class="rates-table__td rates-table__td--data-cell"
-            [class.rates-table__cell--active-middle]="(j + 1) === activeLevel && !(isLastGroup && isLastTaxa)"
-            [class.rates-table__cell--active-bottom]="(j + 1) === activeLevel && isLastGroup && isLastTaxa"
+            [class.rates-table__cell--active-middle]="(j + 1) === mockData.nivelAtual && !(isLastGroup && isLastTaxa)"
+            [class.rates-table__cell--active-bottom]="(j + 1) === mockData.nivelAtual && isLastGroup && isLastTaxa"
           >
             {{ nivel }}
           </td>
